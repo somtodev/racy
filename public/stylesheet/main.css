@@ -1,0 +1,53 @@
+@import url(https://fonts.googleapis.com/css2?family=Space+Mono:wght@100;200;300;400;500;600;700&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Manrope:wght@100;200;300;400;500;600;800&display=swap);
+
+* {
+    font-family: 'Manrope', sans-serif;
+}
+
+section div {
+    width: 100%;
+    color: #181818;
+    margin: .25em 0;
+}
+
+main {
+    position: relative;
+    width: 90%;
+    max-height: 60vh;
+    overflow-x: auto;
+    margin: 0 auto;
+    min-height: 100vh;
+}
+
+form {
+    position: absolute;
+    width: 90%;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    font-family: 'Space Mono', monospace;
+}
+
+form input {
+    width: 85%;
+}
+
+form button {
+    width: max-content;
+}
+
+form input,
+form button {
+    font-size: 1.5em;
+}
+
+.notification {
+    width: 100%;
+    background: #000;
+    color: #FDFD;
+}
