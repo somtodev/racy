@@ -27,6 +27,8 @@ function handleSubmit(event) {
     event.preventDefault()
     const message = messageInput.value
 
+    if (message === '') return
+
     appendMessage(`You: ${message}`)
     socket.emit('send-chat-message', message)
     messageInput.value = ''
