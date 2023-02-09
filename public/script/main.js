@@ -3,9 +3,15 @@ const messageForm = document.querySelector('[send-container]')
 const messageInput = document.querySelector('[message-input]')
 const messageContainer = document.querySelector('[message-container]')
 const bodyElement = document.getElementsByTagName('body')[0]
+const usersDisplay = document.querySelector('[active-users]')
 let toastCount = 0;
 
-const name = prompt("What's your name?")
+
+let name = prompt("What's your name?")
+while (name === '') {
+    name = prompt("Come On, Type In Something")
+}
+
 notify('You Joined')
 socket.emit('new-user', name)
 
@@ -13,12 +19,14 @@ socket.on('chat-message', data => {
     appendMessage(`${data.name}: ${data.message}`)
 })
 
-socket.on('user-connected', name => {
-    notify(`${name} connected`)
+socket.on('user-connected', data => {
+    notify(`${data.name} connected`)
+    usersDisplay.textContent = data.userCount
 })
 
-socket.on('user-disconnected', name => {
-    notify(`${name} disconnected`)
+socket.on('user-disconnected', data => {
+    notify(`${data.name} disconnected`)
+    usersDisplay.textContent = data.userCount
 })
 
 messageForm.addEventListener('submit', handleSubmit)
@@ -46,3 +54,12 @@ function notify(message) {
     notificationElement.textContent = message
     messageContainer.append(notificationElement)
 }
+
+function validateName(name) {
+    if (name === '') {
+        return false
+    }
+    return true
+}
+
+usersDisplay.textContent = '2'

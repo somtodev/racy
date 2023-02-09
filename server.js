@@ -4,8 +4,12 @@ const ejs = require('ejs')
 const path = require('path')
 const { Console } = require('console')
 
+const logger = require('./midderware/logger.js')
+
 const app = express()
 const PORT = 8080
+
+// app.use(logger)
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -15,6 +19,10 @@ app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
     res.render('index')
+})
+
+app.get('/*', (req, res) => {
+    res.render('notFound')
 })
 
 
@@ -30,17 +38,20 @@ server.listen(PORT, (error) => {
 const io = require('socket.io')(server)
 
 const users = {}
+let userCount = 0
 
 io.on('connection', function (socket) {
     console.log('User Join')
 
     socket.on('new-user', name => {
         users[socket.id] = name
-        socket.broadcast.emit('user-connected', name)
+        userCount += 1
+        socket.broadcast.emit('user-connected', { name, userCount })
     })
 
     socket.on('disconnect', () => {
-        socket.broadcast.emit('user-disconnected', users[socket.id])
+        userCount -= 1
+        socket.broadcast.emit('user-disconnected', { name: users[socket.id], userCount })
         delete users[socket.id]
     })
 
