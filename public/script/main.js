@@ -8,7 +8,8 @@ let toastCount = 0;
 
 
 let name = prompt("What's your name?")
-while (name === '') {
+
+while (name === '' || name === undefined || name === null) {
     name = prompt("Come On, Type In Something")
 }
 
