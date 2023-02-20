@@ -1,4 +1,6 @@
 const socket = io()
+const chatApp = document.getElementsByTagName('main')[0]
+const WELCOME_CONTAINER = document.createElement('section');
 const messageForm = document.querySelector('[send-container]')
 const messageInput = document.querySelector('[message-input]')
 const messageContainer = document.querySelector('[message-container]')
@@ -7,30 +9,29 @@ const usersDisplay = document.querySelector('[active-users]')
 let toastCount = 0;
 
 
-let name = prompt("What's your name?")
+window.onload = welcomeUser
 
-while (name === '' || name === undefined || name === null) {
-    name = prompt("Come On, Type In Something")
+
+function validatedUser(name) {
+    notify('You Joined')
+    socket.emit('new-user', name)
+
+    socket.on('chat-message', data => {
+        appendMessage(`${data.name}: ${data.message}`)
+    })
+
+    socket.on('user-connected', data => {
+        notify(`${data.name} connected`)
+        usersDisplay.textContent = data.userCount
+    })
+
+    socket.on('user-disconnected', data => {
+        notify(`${data.name} disconnected`)
+        usersDisplay.textContent = data.userCount
+    })
+
+    messageForm.addEventListener('submit', handleSubmit)
 }
-
-notify('You Joined')
-socket.emit('new-user', name)
-
-socket.on('chat-message', data => {
-    appendMessage(`${data.name}: ${data.message}`)
-})
-
-socket.on('user-connected', data => {
-    notify(`${data.name} connected`)
-    usersDisplay.textContent = data.userCount
-})
-
-socket.on('user-disconnected', data => {
-    notify(`${data.name} disconnected`)
-    usersDisplay.textContent = data.userCount
-})
-
-messageForm.addEventListener('submit', handleSubmit)
 
 function handleSubmit(event) {
     event.preventDefault()
@@ -63,4 +64,39 @@ function validateName(name) {
     return true
 }
 
-usersDisplay.textContent = '2'
+function welcomeUser() {
+    chatApp.style.display = 'none'
+    const WELCOME_FORM = document.createElement('form');
+    const WELCOME_INPUT = document.createElement('input');
+    const WELCOME_BUTTON = document.createElement('button');
+    WELCOME_INPUT.setAttribute('placeholder', 'Enter an anonymous name (your choice)')
+
+    WELCOME_BUTTON.textContent = 'Join Chat'
+    WELCOME_BUTTON.setAttribute('type', 'submit')
+
+
+    WELCOME_FORM.append(WELCOME_INPUT, WELCOME_BUTTON)
+    WELCOME_CONTAINER.append(WELCOME_FORM)
+    bodyElement.append(WELCOME_CONTAINER)
+
+    WELCOME_FORM.addEventListener('submit', (event) => {
+        event.preventDefault()
+        handleNameInput(WELCOME_INPUT.value)
+    })
+}
+
+
+function handleNameInput(name) {
+
+    const validName = validateName(name)
+
+    if (validName) {
+        bodyElement.removeChild(WELCOME_CONTAINER)
+        chatApp.style.display = 'block'
+        validatedUser(name)
+
+    }
+
+}
+
+usersDisplay.textContent = '1'

@@ -17,6 +17,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.set('view engine', 'ejs');
 
+
 app.get('/', (req, res) => {
     res.render('index')
 })
@@ -35,8 +36,10 @@ server.listen(PORT, (error) => {
     }
 })
 
-const io = require('socket.io')(server)
 
+
+
+const io = require('socket.io')(server)
 const users = {}
 let userCount = 0
 
