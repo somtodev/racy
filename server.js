@@ -7,7 +7,7 @@ const { Console } = require('console')
 const logger = require('./midderware/logger.js')
 
 const app = express()
-const PORT = 8080
+const PORT = process.env.PORT || 8080
 
 // app.use(logger)
 
